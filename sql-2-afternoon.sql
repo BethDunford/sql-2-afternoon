@@ -208,3 +208,81 @@ WHERE type = 'silver';
 
 DELETE FROM practice_delete
 WHERE value = 150;
+
+
+
+
+--Practice eCommerce Simulation - No Hints
+
+-- 1. Create Users, Products & Order Tables
+-- 1.A Users table needs a name and an email & a primary key.
+	  CREATE TABLE users (
+	  user_id SERIAL PRIMARY KEY,
+	  name VARCHAR(100) NOT NULL,
+	  email VARCHAR(100) NOT NULL
+	 );
+-- 1.B Products table needs a name and a price & a primary key.
+	  CREATE TABLE products (
+	  product_id SERIAL PRIMARY KEY,
+	  name VARCHAR(100) NOT NULL,
+	  price NUMERIC NOT NULL
+	 );
+-- 1.C Orders table needs a ref to a product & a primary key.
+	CREATE TABLE orders (
+	  order_id SERIAL PRIMARY KEY,
+	  product_id INTEGER,
+	  FOREIGN KEY (product_id) REFERENCES products(product_id)
+	 );
+-- 2. Add some data to fill up each table.
+-- 2.A At least 3 users
+	  INSERT INTO users (name, email)
+	  VALUES 
+	    ('Lizzie McGuire', 'lizzie@aol.com'),
+	    ('Gordo', 'gordo@aol.com'),
+	    ('Miranda', 'miranda@aol.com');
+-- 2.B At least 3 products
+	  INSERT INTO products (name, price)
+	  VALUES 
+	    ('Unicorns', 12),
+	    ('Dragons', 23),
+	    ('Goose', 34);
+-- 2.C At least 3 orders.
+	  INSERT INTO orders (product_id)
+	  VALUES 
+	    (1),
+	    (2),
+	    (3);
+-- 3. Run queries against your data.
+-- 3.A Get all products for the first order.
+	  SELECT * FROM products p
+	  INNER JOIN orders o ON p.product_id = o.product_id
+	  WHERE o.order_id = 1;
+-- 3.B Get all orders.
+	  SELECT * FROM orders;
+-- 3.C Get the total cost of an order ( sum the price of all products on an order ).
+	  SELECT SUM(o.order_id)
+	  FROM products p
+	  INNER JOIN orders o ON p.product_id = o.product_id
+	  WHERE o.order_id = 1;
+-- 4. Add a foreign key reference from orders to users.
+	  ALTER TABLE orders
+	  ADD COLUMN user_id INT REFERENCES users(user_id);
+-- 5. Update the orders table to link a user to each order.
+	  ALTER TABLE users
+	  ADD COLUMN order_id INT
+	  REFERENCES orders(order_id);
+	  UPDATE users 
+	  SET order_id = 1
+	  WHERE user_id = 1;
+-- 6. Run queries against your data.
+-- 6.A Get all orders for a user. 
+	  SELECT *
+	  FROM users u
+	  INNER JOIN orders o
+	  ON o.order_id = u.order_id
+	  WHERE u.user_id = 1;
+-- 6.B Get how many orders each user has.
+    SELECT SUM(o.order_id)
+    FROM users u
+    INNER JOIN orders o ON p.product_id = o.product_id
+    WHERE o.order_id = 1
